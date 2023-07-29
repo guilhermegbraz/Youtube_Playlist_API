@@ -11,7 +11,6 @@ public record AtualizarVideoDto(
         String descricao,
 
         @Nullable
-        @Pattern(regexp = "^(https?|ftp)://[^\\s/$.?#].\\S*$\n", message = "Url inválida")
         String url
 ) {
 }

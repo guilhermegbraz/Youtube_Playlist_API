@@ -18,7 +18,6 @@ public record CadatroVideoDTO
 
     @NotBlank(message = "O campo url é obrigatório")
     @Size(min = 1, max = 80)
-    @Pattern(regexp = "^(https?|ftp)://[^\\s/$.?#].\\S*$\n", message = "Url inválida")
     String url
 )
 {

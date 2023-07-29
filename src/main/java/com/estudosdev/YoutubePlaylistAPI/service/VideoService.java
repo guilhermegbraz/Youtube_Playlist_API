@@ -23,13 +23,13 @@ public class VideoService {
 
     public List<VideoDadosListagem> resgatar() {
         var listagemVideo = new ArrayList<VideoDadosListagem>();
-        this.videoRepository.findAll().forEach(videoEntity -> listagemVideo.add(new VideoDadosListagem(videoEntity)));
+        this.videoRepository.findAllByFlagExcluidoFalse().forEach(videoEntity -> listagemVideo.add(new VideoDadosListagem(videoEntity)));
 
         return listagemVideo;
     }
 
     public Optional<VideoDadosListagem> resgatarUmVideo(Long id) {
-        var optionalVideoEntity = this.videoRepository.findById(id);
+        var optionalVideoEntity = this.videoRepository.findByIdAndFlagExcluidoFalse(id);
         return optionalVideoEntity.map(VideoDadosListagem::new);
     }
 
@@ -42,7 +42,7 @@ public class VideoService {
 
     @Transactional
     public VideoDadosListagem atualizar(AtualizarVideoDto dadosAtualizacao) {
-        var optionalReferenciaVideo = this.videoRepository.findById(dadosAtualizacao.id());
+        var optionalReferenciaVideo = this.videoRepository.findByIdAndFlagExcluidoFalse(dadosAtualizacao.id());
         if(optionalReferenciaVideo.isEmpty()) throw new RegrasNegocioPlaylistException("Video não encontrado");
         var referenciaVideo = optionalReferenciaVideo.get();
 
@@ -51,5 +51,14 @@ public class VideoService {
         if(dadosAtualizacao.url() != null) referenciaVideo.setUrl(dadosAtualizacao.url());
 
         return new VideoDadosListagem(referenciaVideo);
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        var optionalReferenciaVideo = this.videoRepository.findByIdAndFlagExcluidoFalse(id);
+        if(optionalReferenciaVideo.isEmpty()) throw new RegrasNegocioPlaylistException("Video não encontrado");
+        var referenciaVideo = optionalReferenciaVideo.get();
+
+        referenciaVideo.setFlagExcluido(true);
     }
 }

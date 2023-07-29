@@ -26,11 +26,14 @@ public class VideoEntity {
 
     @Column(nullable = false)
     private String url;
+    @Column(name = "flag_excluido")
+    private boolean flagExcluido;
 
     public VideoEntity(String titulo, String descricao, String url) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.url = url;
+        this.flagExcluido = false;
     }
 
     public void setId(Long id) {

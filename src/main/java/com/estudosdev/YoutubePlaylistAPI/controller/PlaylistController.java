@@ -24,9 +24,9 @@ public class PlaylistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VideoDadosListagem>> listarVideos() {
+    public ResponseEntity listarVideos() {
         var videos = this.videoService.resgatar();
-        if(videos.isEmpty()) return (ResponseEntity<List<VideoDadosListagem>>) ResponseEntity.notFound();
+        if(videos.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não encontrado");
 
         return ResponseEntity.ok(videos);
     }
@@ -56,6 +56,12 @@ public class PlaylistController {
         } catch (RegrasNegocioPlaylistException exception){
             return ResponseEntity.badRequest().body("O id passado não pertence a nenhum video cadastrado");
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity excluirVideo(@PathVariable Long id) {
+        this.videoService.deletar(id);
+        return null;
     }
 
 //"História completa da criação de DRAGON BALL e o sucesso revolucionário do mangá | PN Extra 353"
