@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VideoService {
@@ -22,5 +23,10 @@ public class VideoService {
         this.videoRepository.findAll().forEach(videoEntity -> listagemVideo.add(new VideoDadosListagem(videoEntity)));
 
         return listagemVideo;
+    }
+
+    public Optional<VideoDadosListagem> resgatarUmVideo(Long id) {
+        var optionalVideoEntity = this.videoRepository.findById(id);
+        return optionalVideoEntity.map(VideoDadosListagem::new);
     }
 }
