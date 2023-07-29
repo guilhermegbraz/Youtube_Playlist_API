@@ -1,7 +1,9 @@
 package com.estudosdev.YoutubePlaylistAPI.controller;
 
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.AtualizarVideoDto;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.CadatroVideoDTO;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.VideoDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.service.VideoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -43,6 +45,18 @@ public class PlaylistController {
         var uri = uriBuilder.path("/playlist/{id}").buildAndExpand(idVideoCadastrado).toUri();
 
         return ResponseEntity.created(uri).body("Video cadastrado na playlist");
-
     }
+
+    @PutMapping
+    public ResponseEntity atualizarVideo(@RequestBody @Valid AtualizarVideoDto dadosAtualização) {
+        try{
+            var videoAtualizado = this.videoService.atualizar(dadosAtualização);
+
+            return ResponseEntity.ok(videoAtualizado);
+        } catch (RegrasNegocioPlaylistException exception){
+            return ResponseEntity.badRequest().body("O id passado não pertence a nenhum video cadastrado");
+        }
+    }
+
+//"História completa da criação de DRAGON BALL e o sucesso revolucionário do mangá | PN Extra 353"
 }

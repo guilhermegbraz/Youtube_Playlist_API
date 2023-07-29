@@ -3,20 +3,22 @@ package com.estudosdev.YoutubePlaylistAPI.controller.dto;
 
 import com.estudosdev.YoutubePlaylistAPI.model.entities.VideoEntity;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record CadatroVideoDTO
 (
-    @NotBlank
+    @NotBlank(message = "O campo titulo é obrigatório")
     @Size(min = 1, max = 50)
     String titulo,
 
-    @NotBlank
+    @NotBlank(message = "O campo descricao é obrigatório")
     @Size(min = 1, max = 200)
     String descricao,
 
-    @NotBlank
+    @NotBlank(message = "O campo url é obrigatório")
     @Size(min = 1, max = 80)
+    @Pattern(regexp = "^(https?|ftp)://[^\\s/$.?#].\\S*$\n", message = "Url inválida")
     String url
 )
 {
