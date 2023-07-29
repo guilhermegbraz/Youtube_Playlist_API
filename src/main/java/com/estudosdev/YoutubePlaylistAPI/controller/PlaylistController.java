@@ -1,12 +1,13 @@
 package com.estudosdev.YoutubePlaylistAPI.controller;
 
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.CadatroVideoDTO;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.VideoDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.service.VideoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -28,13 +29,20 @@ public class PlaylistController {
         return ResponseEntity.ok(videos);
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<?> detalharUmVideo(@PathVariable Long id) {
+    public ResponseEntity detalharUmVideo(@PathVariable Long id) {
         var optionalVideo = this.videoService.resgatarUmVideo(id);
         if(optionalVideo.isPresent()) return ResponseEntity.ok(optionalVideo.get());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não encontrado");
+    }
+
+    @PostMapping
+    public ResponseEntity<?> cadastrarVideo(@RequestBody @Valid CadatroVideoDTO cadastroVideoDTO, UriComponentsBuilder uriBuilder) {
+        var idVideoCadastrado = this.videoService.cadastrar(cadastroVideoDTO);
+        var uri = uriBuilder.path("/playlist/{id}").buildAndExpand(idVideoCadastrado).toUri();
+
+        return ResponseEntity.created(uri).body("Video cadastrado na playlist");
 
     }
 }
