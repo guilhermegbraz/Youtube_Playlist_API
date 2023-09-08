@@ -1,8 +1,8 @@
 package com.estudosdev.YoutubePlaylistAPI.controller;
 
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.AtualizarVideoDto;
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.CadatroVideoDTO;
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.VideoDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.AtualizarVideoDto;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.CadatroVideoDTO;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.VideoDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.service.VideoService;
 import jakarta.validation.Valid;
@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/playlist")
@@ -32,11 +30,11 @@ public class PlaylistController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity detalharUmVideo(@PathVariable Long id) {
+    public ResponseEntity<VideoDadosListagem> detalharUmVideo(@PathVariable Long id) {
         var optionalVideo = this.videoService.resgatarUmVideo(id);
-        if(optionalVideo.isPresent()) return ResponseEntity.ok(optionalVideo.get());
+        return optionalVideo.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não encontrado");
     }
 
     @PostMapping

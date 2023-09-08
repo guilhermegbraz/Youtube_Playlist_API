@@ -1,8 +1,8 @@
 package com.estudosdev.YoutubePlaylistAPI.service;
 
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.AtualizarVideoDto;
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.CadatroVideoDTO;
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.VideoDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.AtualizarVideoDto;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.CadatroVideoDTO;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.VideoDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.model.repository.VideoRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,8 @@ public class VideoService {
 
     public List<VideoDadosListagem> resgatar() {
         var listagemVideo = new ArrayList<VideoDadosListagem>();
-        this.videoRepository.findAllByFlagExcluidoFalse().forEach(videoEntity -> listagemVideo.add(new VideoDadosListagem(videoEntity)));
+        this.videoRepository.findAllByFlagExcluidoFalse().forEach(videoEntity ->
+                listagemVideo.add(new VideoDadosListagem(videoEntity)));
 
         return listagemVideo;
     }
