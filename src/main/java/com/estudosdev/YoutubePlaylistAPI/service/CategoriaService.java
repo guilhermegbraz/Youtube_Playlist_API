@@ -1,6 +1,7 @@
 package com.estudosdev.YoutubePlaylistAPI.service;
 
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.CategoriaDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CadastroCategoriaDto;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CategoriaDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.model.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,5 +31,11 @@ public class CategoriaService {
 
         return this.categoriaRepository.findByIdAndFlagExcluidoFalse(id)
                 .map(CategoriaDadosListagem::new);
+    }
+
+    public Long cadastrar(CadastroCategoriaDto cadastroCategoriaDto) {
+        var categoria = this.categoriaRepository.save(cadastroCategoriaDto.toCategoriaEntity());
+
+        return categoria.getId();
     }
 }

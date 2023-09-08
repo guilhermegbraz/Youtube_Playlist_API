@@ -1,19 +1,21 @@
 package com.estudosdev.YoutubePlaylistAPI.controller;
 
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.CategoriaDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CadastroCategoriaDto;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CategoriaDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.service.CategoriaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-@RestController("/categoria")
+@RestController
+@RequestMapping("/categoria")
 public class CategoriaController {
 
     @Autowired
@@ -34,5 +36,14 @@ public class CategoriaController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @PostMapping
+    public ResponseEntity<CategoriaDadosListagem> cadastrarCategoria(
+            @RequestBody @Valid CadastroCategoriaDto cadastroCategoriaDto
+            , UriComponentsBuilder uriBuilder)
+    {
+        var id = this.categoriaService.cadastrar(cadastroCategoriaDto);
+        var uri = uriBuilder.path("/categoria/{id}").buildAndExpand(id).toUri();
 
+        return ResponseEntity.created(uri).body(this.categoriaService.detalhar(id).get());
+    }
 }
