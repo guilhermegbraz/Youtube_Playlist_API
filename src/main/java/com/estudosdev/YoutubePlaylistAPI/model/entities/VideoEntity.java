@@ -20,15 +20,12 @@ public class VideoEntity {
     private Long id;
 
     @Column(nullable = false)
-    @NotNull
     private String titulo;
 
     @Column(nullable = false)
-    @NotNull
     private String descricao;
 
     @Column(nullable = false)
-    @NotNull
     private String url;
 
     @Column(name = "flag_excluido")
