@@ -1,4 +1,4 @@
-package com.estudosdev.YoutubePlaylistAPI.controller.dto;
+package com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria;
 
 import com.estudosdev.YoutubePlaylistAPI.model.entities.CategoriaEntity;
 

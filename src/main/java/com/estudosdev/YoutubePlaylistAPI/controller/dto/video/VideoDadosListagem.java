@@ -1,4 +1,4 @@
-package com.estudosdev.YoutubePlaylistAPI.controller.dto;
+package com.estudosdev.YoutubePlaylistAPI.controller.dto.video;
 
 import com.estudosdev.YoutubePlaylistAPI.model.entities.VideoEntity;
 
