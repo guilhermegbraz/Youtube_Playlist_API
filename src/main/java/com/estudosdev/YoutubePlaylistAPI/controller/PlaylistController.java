@@ -60,9 +60,12 @@ public class PlaylistController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity excluirVideo(@PathVariable Long id) {
-        this.videoService.deletar(id);
-        return null;
+        try {
+            this.videoService.deletar(id);
+            return ResponseEntity.noContent().build();
+        } catch (RegrasNegocioPlaylistException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
     }
 
-//"História completa da criação de DRAGON BALL e o sucesso revolucionário do mangá | PN Extra 353"
 }
