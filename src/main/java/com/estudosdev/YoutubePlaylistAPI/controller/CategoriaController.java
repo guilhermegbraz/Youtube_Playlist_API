@@ -1,7 +1,9 @@
 package com.estudosdev.YoutubePlaylistAPI.controller;
 
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.AlterarCategoriaDto;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CadastroCategoriaDto;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CategoriaDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.service.CategoriaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +47,15 @@ public class CategoriaController {
         var uri = uriBuilder.path("/categoria/{id}").buildAndExpand(id).toUri();
 
         return ResponseEntity.created(uri).body(this.categoriaService.detalhar(id).get());
+    }
+
+    @PutMapping
+    public ResponseEntity alterarCategoria(@RequestBody @Valid AlterarCategoriaDto alterarCategoriaDto) {
+        try {
+            CategoriaDadosListagem categoriaAtualizada = this.categoriaService.atualizar(alterarCategoriaDto);
+            return ResponseEntity.ok(categoriaAtualizada);
+        } catch (RegrasNegocioPlaylistException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
     }
 }

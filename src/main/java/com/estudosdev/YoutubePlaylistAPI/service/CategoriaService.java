@@ -1,10 +1,13 @@
 package com.estudosdev.YoutubePlaylistAPI.service;
 
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.AlterarCategoriaDto;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CadastroCategoriaDto;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CategoriaDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.model.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,5 +40,19 @@ public class CategoriaService {
         var categoria = this.categoriaRepository.save(cadastroCategoriaDto.toCategoriaEntity());
 
         return categoria.getId();
+    }
+
+    @Transactional
+    public CategoriaDadosListagem atualizar(AlterarCategoriaDto alterarCategoriaDto) {
+        var optionalCategoria = this.categoriaRepository.findByIdAndFlagExcluidoFalse(alterarCategoriaDto.id());
+        if (optionalCategoria.isEmpty())
+            throw new RegrasNegocioPlaylistException("Categoria com id " +
+                    alterarCategoriaDto.id().toString() + " não encontrada");
+       var categoria = optionalCategoria.get();
+
+       if(alterarCategoriaDto.titulo() != null) categoria.setTitulo(alterarCategoriaDto.titulo());
+       if (alterarCategoriaDto.cor() != null) categoria.setCor(alterarCategoriaDto.cor());
+
+       return new CategoriaDadosListagem(categoria);
     }
 }
