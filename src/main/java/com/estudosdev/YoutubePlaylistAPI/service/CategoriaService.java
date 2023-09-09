@@ -55,4 +55,13 @@ public class CategoriaService {
 
        return new CategoriaDadosListagem(categoria);
     }
+
+    @Transactional
+    public void deletar(Long id) {
+        var optionalCategoria = this.categoriaRepository.findByIdAndFlagExcluidoFalse(id);
+        if (optionalCategoria.isEmpty())
+            throw new RegrasNegocioPlaylistException("Categoria com id " + id + " Não encontrado");
+        var categoria = optionalCategoria.get();
+        categoria.setFlagExcluido(true);
+    }
 }

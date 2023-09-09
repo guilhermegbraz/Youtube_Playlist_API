@@ -58,4 +58,15 @@ public class CategoriaController {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletarCategoria(@PathVariable Long id) {
+        try {
+            this.categoriaService.deletar(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (RegrasNegocioPlaylistException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
 }
