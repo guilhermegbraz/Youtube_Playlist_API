@@ -3,6 +3,7 @@ package com.estudosdev.YoutubePlaylistAPI.controller;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.AlterarCategoriaDto;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CadastroCategoriaDto;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CategoriaDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.VideoDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.service.CategoriaService;
 import jakarta.validation.Valid;
@@ -69,4 +70,10 @@ public class CategoriaController {
         }
     }
 
+    @GetMapping("/{idCategoria}/videos")
+    public ResponseEntity<List<VideoDadosListagem>> listarVideos(@PathVariable Long idCategoria) {
+        List<VideoDadosListagem> videosCategoria = this.categoriaService.listarVideoPorCategoria(idCategoria);
+
+        return ResponseEntity.ok(videosCategoria);
+    }
 }

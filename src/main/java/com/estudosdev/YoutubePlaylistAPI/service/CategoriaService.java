@@ -3,8 +3,10 @@ package com.estudosdev.YoutubePlaylistAPI.service;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.AlterarCategoriaDto;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CadastroCategoriaDto;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.categoria.CategoriaDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.VideoDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.model.repository.CategoriaRepository;
+import com.estudosdev.YoutubePlaylistAPI.model.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,9 @@ public class CategoriaService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private VideoRepository videoRepository;
 
     /**
      * Busca no banco de dados todos os registros não excluidos, converte de Entity para
@@ -63,5 +68,11 @@ public class CategoriaService {
             throw new RegrasNegocioPlaylistException("Categoria com id " + id + " Não encontrado");
         var categoria = optionalCategoria.get();
         categoria.setFlagExcluido(true);
+    }
+
+    public List<VideoDadosListagem> listarVideoPorCategoria(Long idCategoria) {
+        var videos = this.videoRepository.findAllByFlagExcluidoFalseAndCategoriaId(idCategoria);
+
+        return videos.stream().map(VideoDadosListagem::new).toList();
     }
 }
