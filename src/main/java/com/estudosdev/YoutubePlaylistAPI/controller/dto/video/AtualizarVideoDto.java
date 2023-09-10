@@ -11,6 +11,7 @@ public record AtualizarVideoDto(
         String descricao,
 
         @Nullable
-        String url
+        String url,
+        Long idCategoria
 ) {
 }

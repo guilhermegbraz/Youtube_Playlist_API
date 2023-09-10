@@ -32,6 +32,10 @@ public class VideoEntity {
     @NotNull
     private boolean flagExcluido;
 
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private CategoriaEntity categoria;
+
     public VideoEntity(String titulo, String descricao, String url) {
         this.titulo = titulo;
         this.descricao = descricao;
