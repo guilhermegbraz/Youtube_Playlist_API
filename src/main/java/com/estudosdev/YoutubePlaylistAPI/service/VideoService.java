@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +41,8 @@ public class VideoService {
     }
 
     public Long cadastrar(CadatroVideoDTO cadastroVideoDTO) {
-        var categoria = this.categoriaRepository.findByIdAndFlagExcluidoFalse(cadastroVideoDTO.idCategoria());
+        Long idCategoria = (cadastroVideoDTO.idCategoria() == null) ? 1L : cadastroVideoDTO.idCategoria();
+        var categoria = this.categoriaRepository.findByIdAndFlagExcluidoFalse(idCategoria);
         if (categoria.isEmpty()) throw new RegrasNegocioPlaylistException("Esse id não pertence a nenhuma categoria");
         var videoEntity = cadastroVideoDTO.toVideoEntity();
         videoEntity.setCategoria(categoria.get());

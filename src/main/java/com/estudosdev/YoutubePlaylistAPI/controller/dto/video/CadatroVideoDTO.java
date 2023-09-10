@@ -20,7 +20,6 @@ public record CadatroVideoDTO
     @Size(min = 1, max = 80)
     String url,
 
-    @NotNull(message = "O atributo categoriaID é obrigatório")
     Long idCategoria
 )
 {
