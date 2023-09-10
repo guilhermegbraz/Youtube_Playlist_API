@@ -13,6 +13,8 @@ public interface VideoRepository extends JpaRepository<VideoEntity, Long> {
 
     List<VideoEntity> findAllByFlagExcluidoFalse();
 
+    List<VideoEntity> findAllByFlagExcluidoFalseAndCategoriaId(Long categoriaId);
 
+    List<VideoEntity> findByFlagExcluidoFalseAndTituloContainingIgnoreCase(String searchTerm);
     Optional<VideoEntity> findByIdAndFlagExcluidoFalse(Long aLong);
 }

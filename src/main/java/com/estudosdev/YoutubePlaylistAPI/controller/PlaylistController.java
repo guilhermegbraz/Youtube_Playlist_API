@@ -1,8 +1,8 @@
 package com.estudosdev.YoutubePlaylistAPI.controller;
 
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.AtualizarVideoDto;
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.CadatroVideoDTO;
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.VideoDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.AtualizarVideoDto;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.CadatroVideoDTO;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.VideoDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.service.VideoService;
 import jakarta.validation.Valid;
@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -24,19 +25,20 @@ public class PlaylistController {
     }
 
     @GetMapping
-    public ResponseEntity listarVideos() {
-        var videos = this.videoService.resgatar();
-        if(videos.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não encontrado");
+    public ResponseEntity<List<VideoDadosListagem>> listarVideos(@RequestParam(name = "search", required = false) String busca) {
+        List<VideoDadosListagem> videos;
+        if(busca == null) videos = this.videoService.resgatar();
+        else videos = this.videoService.buscarPorTitulo(busca);
 
         return ResponseEntity.ok(videos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity detalharUmVideo(@PathVariable Long id) {
+    public ResponseEntity<VideoDadosListagem> detalharUmVideo(@PathVariable Long id) {
         var optionalVideo = this.videoService.resgatarUmVideo(id);
-        if(optionalVideo.isPresent()) return ResponseEntity.ok(optionalVideo.get());
+        return optionalVideo.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não encontrado");
     }
 
     @PostMapping

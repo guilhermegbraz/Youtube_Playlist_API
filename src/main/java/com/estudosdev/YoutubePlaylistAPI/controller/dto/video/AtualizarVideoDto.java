@@ -1,4 +1,4 @@
-package com.estudosdev.YoutubePlaylistAPI.controller.dto;
+package com.estudosdev.YoutubePlaylistAPI.controller.dto.video;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +11,7 @@ public record AtualizarVideoDto(
         String descricao,
 
         @Nullable
-        String url
+        String url,
+        Long idCategoria
 ) {
 }

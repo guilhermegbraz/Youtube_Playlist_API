@@ -1,0 +1,5 @@
+CREATE TABLE categoria (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(50),
+    cor VARCHAR(20)
+);

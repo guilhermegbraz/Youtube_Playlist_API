@@ -1,9 +1,9 @@
-package com.estudosdev.YoutubePlaylistAPI.controller.dto;
+package com.estudosdev.YoutubePlaylistAPI.controller.dto.video;
 
 
 import com.estudosdev.YoutubePlaylistAPI.model.entities.VideoEntity;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record CadatroVideoDTO
@@ -18,7 +18,9 @@ public record CadatroVideoDTO
 
     @NotBlank(message = "O campo url é obrigatório")
     @Size(min = 1, max = 80)
-    String url
+    String url,
+
+    Long idCategoria
 )
 {
     public VideoEntity toVideoEntity() {

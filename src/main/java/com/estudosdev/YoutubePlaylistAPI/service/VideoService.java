@@ -1,10 +1,12 @@
 package com.estudosdev.YoutubePlaylistAPI.service;
 
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.AtualizarVideoDto;
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.CadatroVideoDTO;
-import com.estudosdev.YoutubePlaylistAPI.controller.dto.VideoDadosListagem;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.AtualizarVideoDto;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.CadatroVideoDTO;
+import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.VideoDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
+import com.estudosdev.YoutubePlaylistAPI.model.repository.CategoriaRepository;
 import com.estudosdev.YoutubePlaylistAPI.model.repository.VideoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +19,18 @@ public class VideoService {
 
     private final VideoRepository videoRepository;
 
-    public VideoService(VideoRepository videoRepository) {
+    @Autowired
+    private final CategoriaRepository categoriaRepository;
+
+    public VideoService(VideoRepository videoRepository, CategoriaRepository categoriaRepository) {
         this.videoRepository = videoRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     public List<VideoDadosListagem> resgatar() {
         var listagemVideo = new ArrayList<VideoDadosListagem>();
-        this.videoRepository.findAllByFlagExcluidoFalse().forEach(videoEntity -> listagemVideo.add(new VideoDadosListagem(videoEntity)));
+        this.videoRepository.findAllByFlagExcluidoFalse().forEach(videoEntity ->
+                listagemVideo.add(new VideoDadosListagem(videoEntity)));
 
         return listagemVideo;
     }
@@ -34,7 +41,12 @@ public class VideoService {
     }
 
     public Long cadastrar(CadatroVideoDTO cadastroVideoDTO) {
+        Long idCategoria = (cadastroVideoDTO.idCategoria() == null) ? 1L : cadastroVideoDTO.idCategoria();
+        var categoria = this.categoriaRepository.findByIdAndFlagExcluidoFalse(idCategoria);
+        if (categoria.isEmpty()) throw new RegrasNegocioPlaylistException("Esse id não pertence a nenhuma categoria");
         var videoEntity = cadastroVideoDTO.toVideoEntity();
+        videoEntity.setCategoria(categoria.get());
+
         this.videoRepository.save(videoEntity);
 
         return videoEntity.getId();
@@ -49,6 +61,11 @@ public class VideoService {
         if(dadosAtualizacao.descricao() != null) referenciaVideo.setDescricao(dadosAtualizacao.descricao());
         if(dadosAtualizacao.titulo() != null) referenciaVideo.setTitulo(dadosAtualizacao.titulo());
         if(dadosAtualizacao.url() != null) referenciaVideo.setUrl(dadosAtualizacao.url());
+        if(dadosAtualizacao.idCategoria() != null) {
+            var optionalCategoria = this.categoriaRepository.findByIdAndFlagExcluidoFalse(dadosAtualizacao.idCategoria());
+            if (optionalCategoria.isPresent()) referenciaVideo.setCategoria(optionalCategoria.get());
+            else throw new RegrasNegocioPlaylistException("O id dessa categoria não existe");
+        }
 
         return new VideoDadosListagem(referenciaVideo);
     }
@@ -60,5 +77,11 @@ public class VideoService {
         var referenciaVideo = optionalReferenciaVideo.get();
 
         referenciaVideo.setFlagExcluido(true);
+    }
+
+    public List<VideoDadosListagem> buscarPorTitulo(String busca) {
+        var videos = this.videoRepository.findByFlagExcluidoFalseAndTituloContainingIgnoreCase(busca);
+
+        return videos.stream().map(VideoDadosListagem::new).toList();
     }
 }
