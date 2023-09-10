@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collection;
+import java.util.List;
+
 @RestController
 @RequestMapping("/playlist")
 public class PlaylistController {
@@ -22,9 +25,10 @@ public class PlaylistController {
     }
 
     @GetMapping
-    public ResponseEntity listarVideos() {
-        var videos = this.videoService.resgatar();
-        if(videos.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não encontrado");
+    public ResponseEntity<List<VideoDadosListagem>> listarVideos(@RequestParam(name = "search", required = false) String busca) {
+        List<VideoDadosListagem> videos;
+        if(busca == null) videos = this.videoService.resgatar();
+        else videos = this.videoService.buscarPorTitulo(busca);
 
         return ResponseEntity.ok(videos);
     }

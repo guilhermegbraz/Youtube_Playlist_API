@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,5 +77,11 @@ public class VideoService {
         var referenciaVideo = optionalReferenciaVideo.get();
 
         referenciaVideo.setFlagExcluido(true);
+    }
+
+    public List<VideoDadosListagem> buscarPorTitulo(String busca) {
+        var videos = this.videoRepository.findByFlagExcluidoFalseAndTituloContainingIgnoreCase(busca);
+
+        return videos.stream().map(VideoDadosListagem::new).toList();
     }
 }
