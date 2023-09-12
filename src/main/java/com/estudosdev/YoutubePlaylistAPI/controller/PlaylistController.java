@@ -25,10 +25,8 @@ public class PlaylistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VideoDadosListagem>> listarVideos(@RequestParam(name = "search", required = false) String busca) {
-        List<VideoDadosListagem> videos;
-        if(busca == null) videos = this.videoService.resgatar();
-        else videos = this.videoService.buscarPorTitulo(busca);
+    public ResponseEntity<List<VideoDadosListagem>> listarVideos() {
+        List<VideoDadosListagem> videos= this.videoService.resgatar();
 
         return ResponseEntity.ok(videos);
     }
@@ -70,4 +68,11 @@ public class PlaylistController {
         }
     }
 
+    @GetMapping("/")
+    public ResponseEntity<List<VideoDadosListagem>> buscarPorTitulo(
+            @RequestParam(name = "search", required = false) String busca) {
+        List<VideoDadosListagem> videos = this.videoService.buscarPorTitulo(busca);
+
+        return ResponseEntity.ok(videos);
+    }
 }
