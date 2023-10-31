@@ -7,9 +7,11 @@ import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.model.repository.CategoriaRepository;
 import com.estudosdev.YoutubePlaylistAPI.model.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,12 +29,10 @@ public class VideoService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    public List<VideoDadosListagem> resgatar() {
-        var listagemVideo = new ArrayList<VideoDadosListagem>();
-        this.videoRepository.findAllByFlagExcluidoFalse().forEach(videoEntity ->
-                listagemVideo.add(new VideoDadosListagem(videoEntity)));
+    public Page<VideoDadosListagem> resgatar(Pageable pageable) {
 
-        return listagemVideo;
+        return this.videoRepository.findAllByFlagExcluidoFalse(pageable)
+                .map(VideoDadosListagem::new);
     }
 
     public Optional<VideoDadosListagem> resgatarUmVideo(Long id) {

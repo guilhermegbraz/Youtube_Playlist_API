@@ -6,10 +6,14 @@ import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.VideoDadosListagem
 import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.service.VideoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @RestController
@@ -23,10 +27,11 @@ public class PlaylistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VideoDadosListagem>> listarVideos() {
-        List<VideoDadosListagem> videos= this.videoService.resgatar();
+    public ResponseEntity<Page<VideoDadosListagem>> listarVideos(@PageableDefault(size = 20, sort="titulo")
+                                                                     Pageable paginacao) {
+        var pageVideos= this.videoService.resgatar(paginacao);
 
-        return ResponseEntity.ok(videos);
+        return ResponseEntity.ok(pageVideos);
     }
 
     @GetMapping("/{id}")
