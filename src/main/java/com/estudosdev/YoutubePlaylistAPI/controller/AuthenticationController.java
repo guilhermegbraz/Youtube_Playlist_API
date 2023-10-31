@@ -30,11 +30,14 @@ public class AuthenticationController {
 
     @PostMapping
     public ResponseEntity efetuarLogin(@RequestBody LoginDto loginDto) {
-        var tolken = new UsernamePasswordAuthenticationToken(loginDto.login(), loginDto.senha());
-        var authentication = manager.authenticate(tolken);
+
+        var token = new UsernamePasswordAuthenticationToken(loginDto.login(), loginDto.senha());
+        var authentication = manager.authenticate(token);
         var tokenJwt = this.tokenService.gerarToken((UsuarioEntity) authentication.getPrincipal());
 
-        return ResponseEntity.ok(new DadosTokenJwtDto(tokenJwt));
+        var tokenDTO = new DadosTokenJwtDto(tokenJwt);
+
+        return ResponseEntity.ok(tokenDTO);
     }
 
     @PostMapping("/cadastro")
