@@ -5,6 +5,7 @@ import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.CadatroVideoDTO;
 import com.estudosdev.YoutubePlaylistAPI.controller.dto.video.VideoDadosListagem;
 import com.estudosdev.YoutubePlaylistAPI.infra.RegrasNegocioPlaylistException;
 import com.estudosdev.YoutubePlaylistAPI.service.VideoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/playlist")
+@SecurityRequirement(name = "bearer-key")
 public class PlaylistController {
 
     private final VideoService videoService;
